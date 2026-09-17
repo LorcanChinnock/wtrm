@@ -9,16 +9,16 @@ pre-selected, space to toggle, enter to confirm, q to cancel. No terminal
 ## Usage
 
 ```bash
-npx wtrm          # interactive picker; non-interactive: dry run
-npx wtrm -f       # force through uncommitted changes for whatever's deleted
-npx wtrm -d       # skip the picker, delete everything, skipping dirty ones
-npx wtrm -d -f    # skip the picker, delete everything, forcing dirty ones too
+npx @ljchinnock/wtrm          # interactive picker; non-interactive: dry run
+npx @ljchinnock/wtrm -f       # force through uncommitted changes for whatever's deleted
+npx @ljchinnock/wtrm -d       # skip the picker, delete everything, skipping dirty ones
+npx @ljchinnock/wtrm -d -f    # skip the picker, delete everything, forcing dirty ones too
 ```
 
-Or install globally:
+Or install globally — the command itself is still just `wtrm`:
 
 ```bash
-npm install -g wtrm
+npm install -g @ljchinnock/wtrm
 wtrm
 ```
 
