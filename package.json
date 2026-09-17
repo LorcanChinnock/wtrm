@@ -8,6 +8,10 @@
   "files": [
     "bin"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LorcanChinnock/wtrm.git"
+  },
   "author": "Lorcan Chinnock <lorcan.chinnock@mews.com>",
   "license": "MIT",
   "engines": {
