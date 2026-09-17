@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.3](https://github.com/LorcanChinnock/wtrm/compare/v1.0.2...v1.0.3) (2026-09-17)
+
+
+### Bug Fixes
+
+* add repository field so provenance verification can match it ([9740ade](https://github.com/LorcanChinnock/wtrm/commit/9740aded00577cf1c479eed140458275269ade25))
+* add repository field so provenance verification can match it ([a9b15cf](https://github.com/LorcanChinnock/wtrm/commit/a9b15cf1de24161fde90d0313ab889bf0f8b59e2))
+
 ## [1.0.2](https://github.com/LorcanChinnock/wtrm/compare/v1.0.1...v1.0.2) (2026-09-17)
 
 
