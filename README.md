@@ -8,8 +8,8 @@ Delete git worktrees for the current repo
 ## Usage
 
 ```bash
-npx @ljchinnock/wtrm          # interactive picker; non-interactive: dry run
-npx @ljchinnock/wtrm -f       # force through uncommitted changes for whatever's deleted
+npx @ljchinnock/wtrm          # interactive picker
+npx @ljchinnock/wtrm -f       # allows deleting dirty worktrees
 npx @ljchinnock/wtrm -d       # skip the picker, delete everything, skipping dirty ones
 npx @ljchinnock/wtrm -d -f    # skip the picker, delete everything, forcing dirty ones too
 ```
