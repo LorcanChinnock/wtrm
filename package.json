@@ -1,5 +1,5 @@
 {
-  "name": "wtrm",
+  "name": "@ljchinnock/wtrm",
   "version": "1.0.0",
   "description": "Delete all git worktrees for the current repo, keeping the main one. Dry-run by default.",
   "bin": {
