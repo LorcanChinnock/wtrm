@@ -1,0 +1,21 @@
+{
+  "name": "wtrm",
+  "version": "0.1.0",
+  "description": "Delete all git worktrees for the current repo, keeping the main one. Dry-run by default.",
+  "bin": {
+    "wtrm": "./bin/wtrm.sh"
+  },
+  "files": [
+    "bin"
+  ],
+  "author": "Lorcan Chinnock <lorcan.chinnock@mews.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ]
+}
