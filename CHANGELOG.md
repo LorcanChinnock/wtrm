@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.1](https://github.com/LorcanChinnock/wtrm/compare/v1.0.0...v1.0.1) (2026-09-17)
+
+
+### Bug Fixes
+
+* scope the package name to @ljchinnock/wtrm ([bbfb9b7](https://github.com/LorcanChinnock/wtrm/commit/bbfb9b7e2379aa6588999ad7a81432103c6eb209))
+* scope the package name to @ljchinnock/wtrm ([52baedd](https://github.com/LorcanChinnock/wtrm/commit/52baedde26aac367f511796996bb22881247fb27))
+* use a PAT for release-please so releases can trigger publish ([afa272e](https://github.com/LorcanChinnock/wtrm/commit/afa272e43323ea562c24cab29c0f9c65c55318ee))
+* use a PAT for release-please so releases can trigger publish ([cd25fc2](https://github.com/LorcanChinnock/wtrm/commit/cd25fc21aa21f01f69e8f8b845d108ecd1826242))
+
 ## 1.0.0 (2026-09-17)
 
 
