@@ -1,21 +1,25 @@
 # wtrm
 
-Delete all git worktrees for the current repo, keeping the main one.
+Delete git worktrees for the current repo, keeping the main one.
 
-Dry-run by default — nothing gets deleted unless you pass `-f`/`--force`.
+Run it in a terminal and it shows an interactive picker — everything's
+pre-selected, space to toggle, enter to confirm, q to cancel. No terminal
+(scripts, CI)? It falls back to a dry-run listing unless you pass `-d`/`-f`.
 
 ## Usage
 
 ```bash
-npx wtrm          # dry run: lists worktrees that would be removed
-npx wtrm -f       # actually removes them, then prunes
+npx wtrm          # interactive picker; non-interactive: dry run
+npx wtrm -f       # force through uncommitted changes for whatever's deleted
+npx wtrm -d       # skip the picker, delete everything, skipping dirty ones
+npx wtrm -d -f    # skip the picker, delete everything, forcing dirty ones too
 ```
 
 Or install globally:
 
 ```bash
 npm install -g wtrm
-wtrm -f
+wtrm
 ```
 
 ## Platforms
