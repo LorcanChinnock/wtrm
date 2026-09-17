@@ -41,7 +41,8 @@ if ! $force; then
 fi
 
 jobs=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)
-# shellcheck disable=SC2016 -- expands inside the child bash -c, not here
+# expands inside the child bash -c, not here
+# shellcheck disable=SC2016
 printf '%s\n' "${targets[@]}" | xargs -P "$jobs" -I{} bash -c '
   git worktree remove "$1" --force && printf "\033[31m✓ [%s]\033[0m\n" "$1"
 ' _ {}
