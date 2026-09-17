@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.4](https://github.com/LorcanChinnock/wtrm/compare/v1.0.3...v1.0.4) (2026-09-17)
+
+
+### Bug Fixes
+
+* correct arrow-key picker redraw and cursor movement ([d891713](https://github.com/LorcanChinnock/wtrm/commit/d891713a6e07e6b3216c657d77c5e315e366676b))
+* correct arrow-key picker redraw and cursor movement ([38cbfdf](https://github.com/LorcanChinnock/wtrm/commit/38cbfdf9fec0de7835e31ea8eac34675545b275b))
+
 ## [1.0.3](https://github.com/LorcanChinnock/wtrm/compare/v1.0.2...v1.0.3) (2026-09-17)
 
 
