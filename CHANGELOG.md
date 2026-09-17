@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/LorcanChinnock/wtrm/compare/v1.0.1...v1.0.2) (2026-09-17)
+
+
+### Bug Fixes
+
+* upgrade npm CLI before publish for trusted-publishing OIDC ([a796351](https://github.com/LorcanChinnock/wtrm/commit/a7963518154ae3b254f3fa8c8ea6056ea140e67b))
+* upgrade npm CLI before publish for trusted-publishing OIDC ([343b581](https://github.com/LorcanChinnock/wtrm/commit/343b581097d7523aecf07dc239861d251b265488))
+
 ## [1.0.1](https://github.com/LorcanChinnock/wtrm/compare/v1.0.0...v1.0.1) (2026-09-17)
 
 
