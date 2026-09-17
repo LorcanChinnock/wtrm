@@ -63,6 +63,7 @@ if [[ -t 0 && -t 1 ]] && ! $skip_picker; then
   stty -echo -icanon min 1 time 0
   trap 'stty "$stty_orig"; printf "\033[?25h" >&2' EXIT
   printf '\033[?25l' >&2
+  printf '\0337' >&2
   draw_picker
 
   cancelled=false
@@ -70,7 +71,7 @@ if [[ -t 0 && -t 1 ]] && ! $skip_picker; then
     IFS= read -rsn1 key
     if [[ $key == $'\x1b' ]]; then
       rest=""
-      read -rsn2 -t 0.05 rest || true
+      read -rsn2 -t 1 rest || true
       key+="$rest"
     fi
     case "$key" in
@@ -82,7 +83,7 @@ if [[ -t 0 && -t 1 ]] && ! $skip_picker; then
       q) cancelled=true; break ;;
       ''|$'\n'|$'\r') break ;;
     esac
-    printf '\033[%dA' "$((n + 1))" >&2
+    printf '\0338\033[J' >&2
     draw_picker
   done
 
