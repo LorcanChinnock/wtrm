@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Drives the interactive worktree picker over a real pty and asserts the
-arrow-key cursor moves and no shell errors leak into the output.
+arrow-key cursor moves and no shell errors leak into the output. Also checks
+that running from a parent directory covers every child repo's worktrees.
 Run: python3 test/picker_pty_test.py
 """
 import os
@@ -31,7 +32,43 @@ def read_avail(fd, wait=0.4):
     return data
 
 
+def test_parent_dir():
+    base = os.path.realpath(tempfile.mkdtemp(prefix="wtrm-parent-test-"))
+    try:
+        worktrees = []
+        for name in ("repoa", "repob"):
+            repo = os.path.join(base, "parent", name)
+            os.makedirs(repo)
+            run = lambda *args: subprocess.run(args, cwd=repo, check=True, capture_output=True)
+            run("git", "init", "-q", ".")
+            run("git", "commit", "-q", "--allow-empty", "-m", "init")
+            wt = os.path.join(base, name + " wt")
+            run("git", "worktree", "add", "-q", wt, "-b", name + "-wt")
+            worktrees.append(wt)
+        parent = os.path.join(base, "parent")
+
+        wtrm = lambda *args: subprocess.run(
+            [SCRIPT, *args], cwd=parent, capture_output=True, text=True, stdin=subprocess.DEVNULL
+        )
+        dry = wtrm()
+        assert dry.returncode == 0, dry.stderr
+        assert all(wt in dry.stdout for wt in worktrees), "dry run missed a child worktree: %r" % dry.stdout
+
+        done = wtrm("-d")
+        assert "removed 2 worktree(s)" in done.stdout, "-d did not remove both: %r" % done.stdout
+        assert not any(os.path.exists(wt) for wt in worktrees), "worktrees still on disk"
+
+        empty = os.path.join(base, "empty")
+        os.mkdir(empty)
+        none = subprocess.run([SCRIPT], cwd=empty, capture_output=True, text=True, stdin=subprocess.DEVNULL)
+        assert none.returncode == 1 and "no git repositories" in none.stderr, none.stderr
+        print("ok parent dir")
+    finally:
+        shutil.rmtree(base, ignore_errors=True)
+
+
 def main():
+    test_parent_dir()
     base = tempfile.mkdtemp(prefix="wtrm-pty-test-")
     repo = os.path.join(base, "main")
     wt1 = os.path.join(base, "wt1")

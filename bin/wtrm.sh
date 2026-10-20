@@ -5,6 +5,7 @@ for arg in "$@"; do
   if [[ "$arg" == "-h" || "$arg" == "--help" ]]; then
     cat <<'EOF'
 wtrm - delete git worktrees for the current repo (keeps the main one)
+       run outside a repo, it covers every git repo directly inside the directory
 
 Usage:
   wtrm            interactive: pick which to delete (needs a terminal)
@@ -17,8 +18,6 @@ EOF
   fi
 done
 
-git rev-parse --git-dir >/dev/null 2>&1 || { echo "not a git repository" >&2; exit 1; }
-
 force=false
 skip_picker=false
 for arg in "$@"; do
@@ -29,12 +28,35 @@ for arg in "$@"; do
   esac
 done
 
-porcelain=$(git worktree list --porcelain)
-main=$(awk 'NR==1{print $2}' <<< "$porcelain")
+repos=()
+if git rev-parse --git-dir >/dev/null 2>&1; then
+  repos=(.)
+else
+  for dir in */; do
+    [[ -d "${dir}.git" ]] && repos+=("${dir%/}")
+  done
+  if (( ${#repos[@]} == 0 )); then
+    echo "not a git repository, and no git repositories found inside it" >&2
+    exit 1
+  fi
+fi
+
 targets=()
-while IFS= read -r dir; do
-  targets+=("$dir")
-done < <(awk -v main="$main" '/^worktree /{ if ($2 != main) print $2 }' <<< "$porcelain")
+owners=()
+labels=()
+for repo in "${repos[@]}"; do
+  porcelain=$(git -C "$repo" worktree list --porcelain)
+  main=$(awk 'NR==1{sub(/^worktree /, ""); print}' <<< "$porcelain")
+  while IFS= read -r dir; do
+    targets+=("$dir")
+    owners+=("$main")
+    if (( ${#repos[@]} > 1 )) || [[ $repo != . ]]; then
+      labels+=("$dir  ($(basename "$main"))")
+    else
+      labels+=("$dir")
+    fi
+  done < <(awk -v main="$main" '/^worktree /{ sub(/^worktree /, ""); if ($0 != main) print }' <<< "$porcelain")
+done
 
 if (( ${#targets[@]} == 0 )); then
   echo "nothing to remove"
@@ -49,7 +71,7 @@ draw_picker() {
     [[ ${checked[i]} -eq 1 ]] && mark='x'
     ptr='  '
     [[ $i -eq $cursor ]] && ptr='> '
-    printf '\033[2K%s[%s] %s\n' "$ptr" "$mark" "${targets[i]}" >&2
+    printf '\033[2K%s[%s] %s\n' "$ptr" "$mark" "${labels[i]}" >&2
   done
 }
 
@@ -97,19 +119,24 @@ if [[ -t 0 && -t 1 ]] && ! $skip_picker; then
   fi
 
   picked=()
+  picked_owners=()
   for ((i = 0; i < n; i++)); do
-    (( checked[i] == 1 )) && picked+=("${targets[i]}")
+    if (( checked[i] == 1 )); then
+      picked+=("${targets[i]}")
+      picked_owners+=("${owners[i]}")
+    fi
   done
   if (( ${#picked[@]} == 0 )); then
     echo "nothing selected"
     exit 0
   fi
   targets=("${picked[@]}")
+  owners=("${picked_owners[@]}")
 elif ! $force && ! $skip_picker; then
   n=0
-  for dir in "${targets[@]}"; do
+  for label in "${labels[@]}"; do
     n=$((n + 1))
-    printf "\033[33m[%d/%d] would remove %s\033[0m\n" "$n" "${#targets[@]}" "$dir"
+    printf "\033[33m[%d/%d] would remove %s\033[0m\n" "$n" "${#targets[@]}" "$label"
   done
   echo "dry run — rerun with -d (safe) or -f (force) to delete ${#targets[@]} worktree(s)"
   exit 0
@@ -121,29 +148,31 @@ tmp=$(mktemp)
 
 if $force; then
   # shellcheck disable=SC2016
-  printf '%s\n' "${targets[@]}" | xargs -P "$jobs" -I{} bash -c '
-    if git worktree remove "$1" --force; then
-      printf "\033[31m✓ removed [%s]\033[0m\n" "$1"
+  for i in "${!targets[@]}"; do printf '%s\0%s\0' "${owners[i]}" "${targets[i]}"; done | xargs -0 -n2 -P "$jobs" bash -c '
+    if git -C "$1" worktree remove "$2" --force; then
+      printf "\033[31m✓ removed [%s]\033[0m\n" "$2"
     else
-      printf "\033[33m✗ failed [%s]\033[0m\n" "$1"
+      printf "\033[33m✗ failed [%s]\033[0m\n" "$2"
     fi
-  ' _ {} | tee "$tmp" || true
+  ' _ | tee "$tmp" || true
 else
   # shellcheck disable=SC2016
-  printf '%s\n' "${targets[@]}" | xargs -P "$jobs" -I{} bash -c '
-    if git worktree remove "$1" 2>/dev/null; then
-      printf "\033[31m✓ removed [%s]\033[0m\n" "$1"
+  for i in "${!targets[@]}"; do printf '%s\0%s\0' "${owners[i]}" "${targets[i]}"; done | xargs -0 -n2 -P "$jobs" bash -c '
+    if git -C "$1" worktree remove "$2" 2>/dev/null; then
+      printf "\033[31m✓ removed [%s]\033[0m\n" "$2"
     else
-      printf "\033[33m⚠ skipped, uncommitted changes [%s]\033[0m\n" "$1"
+      printf "\033[33m⚠ skipped, uncommitted changes [%s]\033[0m\n" "$2"
     fi
-  ' _ {} | tee "$tmp" || true
+  ' _ | tee "$tmp" || true
 fi
 
 removed=$(grep -c '✓' "$tmp" || true)
 skipped=$(grep -c '⚠\|✗' "$tmp" || true)
 rm -f "$tmp"
 
-git worktree prune
+printf '%s\n' "${owners[@]}" | sort -u | while IFS= read -r owner; do
+  git -C "$owner" worktree prune
+done
 
 if (( skipped > 0 )); then
   echo "removed $removed, skipped $skipped (of $total)"
