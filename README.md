@@ -14,6 +14,8 @@ npx @ljchinnock/wtrm -d       # skip the picker, delete everything, skipping dir
 npx @ljchinnock/wtrm -d -f    # skip the picker, delete everything, forcing dirty ones too
 ```
 
+Run it from a directory that isn't a git repo (e.g. `~/dev`) and it covers every git repo directly inside it, so you can clean all your repos at once.
+
 Or install globally - the command itself is still just `wtrm`:
 
 ```bash
