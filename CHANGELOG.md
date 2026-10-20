@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/LorcanChinnock/wtrm/compare/v1.0.4...v1.1.0) (2026-10-20)
+
+
+### Features
+
+* scan child repos when run outside a git repo ([1baa58c](https://github.com/LorcanChinnock/wtrm/commit/1baa58c6246eae9089b795464ac7773865635ff6))
+* scan child repos when run outside a git repo ([fa51c05](https://github.com/LorcanChinnock/wtrm/commit/fa51c057b8e3b35fab11c6c59fd05b6046aeebf0))
+
 ## [1.0.4](https://github.com/LorcanChinnock/wtrm/compare/v1.0.3...v1.0.4) (2026-09-17)
 
 
